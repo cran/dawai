@@ -1,0 +1,19 @@
+# functions
+export(err.est, rest.est, rlda, rqda)
+
+S3method(err.est, rlda)
+S3method(err.est, rqda)
+S3method(predict, rlda)
+S3method(predict, rqda)
+S3method(print, rlda)
+S3method(print, rqda)
+S3method(rlda, data.frame)
+S3method(rlda, default)
+S3method(rlda, formula)
+S3method(rlda, matrix)
+S3method(rqda, data.frame)
+S3method(rqda, default)
+S3method(rqda, formula)
+S3method(rqda, matrix)
+
+import(mvtnorm, ibdreg, boot)
