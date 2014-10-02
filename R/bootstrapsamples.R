@@ -1,4 +1,4 @@
-bootstrapsamples <- 
+bootstrapsamples <-
 function(data, numSamples)
 {
     boot <- boot(data, function(d, f) f, numSamples)

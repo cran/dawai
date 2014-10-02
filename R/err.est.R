@@ -1,2 +1,2 @@
-err.est <- 
+err.est <-
 function(x, ...) UseMethod("err.est")

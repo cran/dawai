@@ -1,8 +1,8 @@
-rlda <- 
+rlda <-
 function(x, ...) UseMethod("rlda")
 
 
-rlda.formula <- 
+rlda.formula <-
 function(formula, data, ...)
 {
     output <- list()
@@ -23,7 +23,7 @@ function(formula, data, ...)
     {
        cat("data parameter is not a data.frame.\n\n")
        return(output)
-    }  
+    }
     dataset <- model.frame(formula = formula, data = data)
     grouping <- dataset[, 1]
     dataset <- dataset[, -1, drop = FALSE]
@@ -33,7 +33,7 @@ function(formula, data, ...)
 }
 
 
-rlda.data.frame <- 
+rlda.data.frame <-
 function(x, grouping, ...)
 {
     output <- list()
@@ -55,15 +55,15 @@ rlda.matrix <- function(x, ...)
 {
     output <- rlda(as.data.frame(x), ...)
     call <- match.call()
-    call[[1L]] <- as.name("rlda")   
+    call[[1L]] <- as.name("rlda")
     output$call <- call
     output
 }
 
-    
-rlda.default <- 
-function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL, 
-         restext = NULL, gamma = c(0, 1), prior = NULL, ...)
+
+rlda.default <-
+function(x, grouping, subset = NULL, resmatrix = NULL, restext = NULL,
+         gamma = c(0, 1), prior = NULL, ...)
 {
     output <- list()
     output$call <- match.call()
@@ -83,7 +83,7 @@ function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL,
         return(output)
     }
 
-    check <- checks(x, grouping, subset, resmatrix, resvector, restext, gamma, prior)
+    check <- checks(x, grouping, subset, resmatrix, restext, gamma, prior)
     if(is.null(check))
         return(output)
     trainset <- check$trainset
@@ -92,7 +92,7 @@ function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL,
     dimension <- check$dimension
     sizes <- check$n
     resmatrix <- check$resmatrix
-    resvector <- check$resvector
+    resvector <- rep(0, dim(rbind(resmatrix))[1])
     prior <- check$prior
     m <- check$m
     rm(check)
@@ -104,9 +104,8 @@ function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL,
     variances <- getvariances(trainset, traingroups)
 
     output$trainset <- cbind(trainset, traingroups)
-    output$restrictions <- restrictions(resmatrix, resvector, dimension)
+    output$restrictions <- restrictions(resmatrix, dimension)
     output$resmatrix <- resmatrix
-    output$resvector <- resvector
     output$prior <- prior
     output$counts <- sizes
     output$N <- sum(sizes)
@@ -118,16 +117,16 @@ function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL,
 
     greatS <- array(0, c(dimension * numgroups, dimension * numgroups))
          
-    spooled <- rowSums(variances * rep({sizes - 1} / {sum(sizes) - numgroups}, 
+    spooled <- rowSums(variances * rep({sizes - 1} / {sum(sizes) - numgroups},
                        each = dimension * dimension), dims = 2)
     rownames(spooled) <- colnames(spooled) <- colnames(samplemeans)
 
     for(i in 1:numgroups)
-        spooled/sizes[i] -> greatS[1:dimension + dimension * {i - 1}, 
-                                 1:dimension + dimension * {i - 1}]
+        spooled/sizes[i] -> greatS[1:dimension + dimension * {i - 1},
+                                   1:dimension + dimension * {i - 1}]
    
     variances[, , ] <- spooled
-      
+   
     output$spooled <- spooled
 
     estimation <- list()
@@ -140,14 +139,14 @@ function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL,
     {
         estimation[[j]] <- rest.est(gamma[j], meansVector, resvector, resmatrix, greatS)
         estimatedmeans[, , j] <- t(array(estimation[[j]], c(dimension, numgroups)))
-        trainClassification[, j + 1] <- classify(trainset, estimation[[j]], variances, 
-                                                 prior, numgroups, dimension) 
+        trainClassification[, j + 1] <- classify(trainset, estimation[[j]], variances,
+                                                 prior, numgroups, dimension)
     }
     rownames(estimatedmeans) <- rownames(samplemeans)
     colnames(estimatedmeans) <- colnames(samplemeans)
     dimnames(estimatedmeans)[[3]] <- paste("gamma=", gamma, sep = "")
    
-    output$estimatedmeans <- estimatedmeans   
+    output$estimatedmeans <- estimatedmeans
 
     apparent <- 100 * (colSums(trainClassification[, -1] != traingroups) / sum(sizes))
     names(apparent) <- paste("gamma=", gamma, sep = "")
@@ -158,7 +157,7 @@ function(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL,
 }
 
 
-print.rlda <- 
+print.rlda <-
 function(x, ...)
 {
     cat("Call:\n")
@@ -176,7 +175,7 @@ function(x, ...)
 }
 
 
-predict.rlda <- 
+predict.rlda <-
 function(object, newdata, prior = object$prior, gamma = object$gamma, grouping = NULL, ...)
 {
     output <- list()
@@ -214,7 +213,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
             {
                 cat("If grouping variable is a factor, its levels must be numbers.\n\n")
                 return(NULL)
-            } 
+            }
             grouping <- levels(grouping)[grouping]
         }
         grouping <- c(as.matrix(as.numeric(grouping)))
@@ -240,7 +239,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
         cat("Missing values in the newdata set have been deleted.\n\n")
         newdata <- newdata[complete.cases(newdata), , drop = FALSE]
         if(!is.null(grouping))
-            grouping <- grouping(rownames(newdata))    	
+            grouping <- grouping(rownames(newdata))
     }
     if(is.null(prior))
     {
@@ -257,7 +256,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
         cat("Wrong number of classes in a priori probabilities.\n\n")
         return(output)
     }
-    if(sum(prior > 1 | prior < 0) > 0 || sum(prior) != 1)
+    if(sum(prior > 1 | prior < 0) > 0 || abs(sum(prior) - 1) > 1e-12)
     {
         cat("prior values must be in the interval [0,1] and sum 1.\n\n")
         return(output)
@@ -281,11 +280,11 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
     
     for(j in 1:m)
     {
-        posteriorprob[, , j] <- posterior(newdata, array(t(object$estimatedmeans[, , gammaindex[j]])), 
-                                              variances, prior, numgroups, dimension)
-        maxClass <- {posteriorprob[, , j] == apply(posteriorprob[, , j], 1, max)} * rep(1:numgroups, 
+        posteriorprob[, , j] <- posterior(newdata, array(t(object$estimatedmeans[, , gammaindex[j]])),
+                                          variances, prior, numgroups, dimension)
+        maxClass <- {posteriorprob[, , j] == apply(posteriorprob[, , j, drop = FALSE], 1, max)} * rep(1:numgroups,
                                                    each = length(as.matrix(posteriorprob[, , j])) / numgroups)
-        classification[, j] <- apply(maxClass, 1, function(x) x[x != 0][sample(length(x[x != 0]), 1)])                                        
+        classification[, j] <- apply(maxClass, 1, function(x) x[x != 0][sample(length(x[x != 0]), 1)])
     }
 
     rownames(posteriorprob) <- rownames(newdata)
@@ -301,12 +300,12 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
     if(!is.null(grouping))
     {
         classif <- classification
-   	    if(sum(is.na(grouping)) > 0)
+        if(sum(is.na(grouping)) > 0)
         {
-   	        classif <- classif[!is.na(c(grouping)), ]
-   	        grouping <- c(grouping)[!is.na(c(grouping))]
+            classif <- classif[!is.na(c(grouping)), ]
+            grouping <- c(grouping)[!is.na(c(grouping))]
             cat("Missing values in grouping set have been deleted and will not be considered on calculating the true error rate.\n\n")
-   	    }
+        }
         error.rate <- array(0, c(1, m))
         error.rate[1, ] <- 100 * colSums(classif != grouping) / dim(classif)[1]
         colnames(error.rate) <- paste("gamma=", gamma, sep = "")
@@ -322,7 +321,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
 }
 
 
-err.est.rlda <- 
+err.est.rlda <-
 function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
 {
     time <- proc.time()
@@ -345,7 +344,7 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
     if(is.null(prior))
     {
         cat("prior parameter is NULL.\n\n")
-        return(output)         
+        return(output)
     }
     if(dim(rbind(prior))[1] != 1)
     {
@@ -357,7 +356,7 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
         cat("Wrong number of classes in a priori probabilities.\n\n")
         return(output)
     }
-    if(sum(prior > 1 | prior < 0) > 0 || sum(prior) != 1)
+    if(sum(prior > 1 | prior < 0) > 0 || abs(sum(prior) - 1) > 1e-12)
     {
         cat("prior values must be in the interval [0,1] and sum 1.\n\n")
         return(output)
@@ -374,7 +373,7 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
     }
     names(prior) <- names(x$prior)
     resmatrix <- x$resmatrix
-    resvector <- x$resvector
+    resvector <- rep(0, dim(rbind(resmatrix))[1])
     dimension <- nrow(x$samplevariances)
     m <- length(gamma)
     n <- x$counts
@@ -390,9 +389,9 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
     datagroups <- restrictedMeans <- bootHowMany <- bootWho <- list()
     casesClassified <- casesClassifiedcv <- 0
     indexes <- c()
-    for(i in 1:numgroups) 
-        for(j in 1:dimension) 
-            for(k in 1:dimension) 
+    for(i in 1:numgroups)
+        for(j in 1:dimension)
+            for(k in 1:dimension)
                 indexes <- c(indexes, {i - 1} * dimension + j, {i - 1} * dimension + k)
     indexes <- matrix(indexes, ncol = 2, byrow = TRUE)
 
@@ -407,7 +406,7 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
     trainingMeansVector <- c(array(t(trainingMeans)))
 
     A2 <- resmatrix
-    signs <- resmatrix %*% cbind(trainingMeansVector) >= resvector
+    signs <- resmatrix %*% cbind(trainingMeansVector) >= 0
     A2[signs,] <- (-1) * A2[signs, ]
 
     for(group in 1:numgroups)
@@ -425,7 +424,7 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
                rep(n - 1, each = dimension*dimension), dims = 2) / df
     greatS[indexes] <- rep.int(spooled, numgroups) / rep(n, each = dimension * dimension)
 
-    for(j in 1:m) 
+    for(j in 1:m)
         restrictedMeans[[j]] <- rest.est(gamma[j], trainingMeansVector, resvector, resmatrix, greatS)
     time2 <- proc.time()
     meansVector <- rep(NA, dimension * numgroups)
@@ -452,18 +451,18 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
             casesClasses <- rep.int(1:numgroups, times = nClasses)
             for(j in 1:m)
             {
-                misclassifs2[j] <- misclassifs2[j] + sum(classify(casesClas, rest.est(gamma[j], 
-                                   meansVector, resvector, A2, greatS), variancespooled, prior, 
+                misclassifs2[j] <- misclassifs2[j] + sum(classify(casesClas, rest.est(gamma[j],
+                                   meansVector, resvector, A2, greatS), variancespooled, prior,
                                    numgroups, dimension) != casesClasses)
-                misclassifs3[j] <- misclassifs3[j] + sum(classify(casesClas - trainingMeans[casesClasses, ] + 
-                                   t(array(restrictedMeans[[j]], c(dimension, numgroups)))[casesClasses, , drop = FALSE], 
-                                   rest.est(gamma[j], meansVector3 + restrictedMeans[[j]], resvector, resmatrix, greatS), 
+                misclassifs3[j] <- misclassifs3[j] + sum(classify(casesClas - trainingMeans[casesClasses, ] +
+                                   t(array(restrictedMeans[[j]], c(dimension, numgroups)))[casesClasses, , drop = FALSE],
+                                   rest.est(gamma[j], meansVector3 + restrictedMeans[[j]], resvector, resmatrix, greatS),
                                    variancespooled, prior, numgroups, dimension) != casesClasses)
             }
         }
         for(group in 1:numgroups)
         {
-            nn <- n	
+            nn <- n
             nn[group] <- n[group]-1
             meansVectorcv <- meansVector
             meansVectorcv3 <- meansVector3
@@ -481,40 +480,40 @@ function(x, nboot = 50, gamma = x$gamma, prior = x$prior, ...)
                     meansVectorcv[1:dimension + dimension * {group - 1}] <- mean
                     meansVectorcv3[1:dimension + dimension * {group - 1}] <- mean - trainingMeans[group, ]
                     variancespooled[, , ] <- {spooled2 + var(datacv)*{nn[group] - 1}} / df2
-                    greatS[indexes] <- rep.int(variancespooled[, , 1],numgroups) / 
+                    greatS[indexes] <- rep.int(variancespooled[, , 1],numgroups) /
                                        rep(nn, each = dimension * dimension)
                     casesClassifiedcv <- casesClassifiedcv + toClassify
                     case <- datagroups[[group]][kk, , drop = FALSE]
                     for(j in 1:m)
                     {
-                        misclassifs2cv[j] <- misclassifs2cv[j] + {classify(case, rest.est(gamma[j], 
-                                             meansVectorcv, resvector, A2, greatS), variancespooled, prior, 
+                        misclassifs2cv[j] <- misclassifs2cv[j] + {classify(case, rest.est(gamma[j],
+                                             meansVectorcv, resvector, A2, greatS), variancespooled, prior,
                                              numgroups, dimension) != group}*toClassify
-                        misclassifs3cv[j] <- misclassifs3cv[j] + {classify(case - trainingMeans[group, , drop = FALSE] + 
+                        misclassifs3cv[j] <- misclassifs3cv[j] + {classify(case - trainingMeans[group, , drop = FALSE] +
                                              matrix(restrictedMeans[[j]][{1:dimension} + {group - 1}*dimension], nrow = 1), 
-                                             rest.est(gamma[j], meansVectorcv3 + restrictedMeans[[j]], resvector, resmatrix, 
+                                             rest.est(gamma[j], meansVectorcv3 + restrictedMeans[[j]], resvector, resmatrix,
                                              greatS), variancespooled, prior, numgroups, dimension) != group} * toClassify
                     }
-                }  
+                }
             }
         }
         if(first)
         {
-            cat(paste("The procedure will end in approximately ", 
+            cat(paste("The procedure will end in approximately ",
                 round({proc.time() - time2}[3] * {nboot - 1}, 2), " seconds.\n", sep = ""))
             first <- FALSE
         }
     }
-    result <- 100 * rbind(misclassifs2, misclassifs3, misclassifs2cv, misclassifs3cv) / 
+    result <- 100 * rbind(misclassifs2, misclassifs3, misclassifs2cv, misclassifs3cv) /
                     c(casesClassified, casesClassified, casesClassifiedcv, casesClassifiedcv)
     colnames(result) <- paste("gamma=", gamma, sep = "")
     rownames(result) <- c("BT2", "BT3", "BT2CV", "BT3CV")
-    output$restrictions <- restrictions(resmatrix, resvector, dimension)
+    output$restrictions <- restrictions(resmatrix, dimension)
     output$prior <- prior
     output$counts <- n
     output$N <- sum(n)
     output$estimationError <- result
-    cat(paste("The procedure lasted ", round({proc.time() - time}[3], 2), 
+    cat(paste("The procedure lasted ", round({proc.time() - time}[3], 2),
               " seconds.\n\n", sep = ""))
     cat("Call:\n")
     print(output$call)

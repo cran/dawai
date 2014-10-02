@@ -1,4 +1,4 @@
-getmeans <- 
+getmeans <-
 function(data, factors)
 {
     groups <- levels(as.factor(factors))

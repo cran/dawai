@@ -1,4 +1,4 @@
-getvariances <- 
+getvariances <-
 function(data, factors)
 {
     dimension <- dim(data)[2]

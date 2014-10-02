@@ -15,8 +15,8 @@ rqda(x, \dots)
 
 \method{rqda}{formula}(formula, data, \dots)
 
-\method{rqda}{default}(x, grouping, subset = NULL, resmatrix = NULL, resvector = NULL, 
-     restext = NULL, gamma = c(0, 1), prior = NULL, \dots)
+\method{rqda}{default}(x, grouping, subset = NULL, resmatrix = NULL, restext = NULL, 
+     gamma = c(0, 1), prior = NULL, \dots)
 }
 \arguments{
   \item{formula}{ A formula of the form \code{groups ~ x1 + x2 + ...}. That is, the response is the grouping factor and the right hand side specifies the (non-factor) discriminators. }
@@ -24,8 +24,7 @@ rqda(x, \dots)
   \item{x}{ (Required if no formula is given as the principal argument.) A data frame or matrix containing the explanatory variables. }
   \item{grouping}{ (Required if no formula is given as the principal argument.) A numeric vector or factor with numeric levels specifying the class for each observation. }
   \item{subset}{ An index vector specifying the cases to be used in the training sample. }
-  \item{resmatrix}{ A matrix specifying the linear restrictions on the mean vectors: \code{resmatrix} \code{\%*\%} \code{mu} \code{<=} \code{resvector}, where \code{mu = c(mu1, mu2, ...)} and \code{mui} is the mean vector of class \code{i}. If unspecified, \code{restext} will be required (and \code{resmatrix} established accordingly). }
-  \item{resvector}{ A vector of constant values: \code{resmatrix \%*\% mu <= resvector}. By default, \code{resvector = rep(0, dim(resmatrix)[1])}. }
+  \item{resmatrix}{ A matrix specifying the linear restrictions on the mean vectors: \code{resmatrix} \code{\%*\%} \code{mu} \code{<=} 0, where \code{mu = c(mu1, mu2, ...)} and \code{mui} is the mean vector of class \code{i}. If unspecified, \code{restext} will be required (and \code{resmatrix} established accordingly). }
   \item{restext}{ (Required if no \code{resmatrix} argument is given.) A character string from which \code{resmatrix} will be calculated. The first element must be either \code{"s"} (simple order) or \code{"t"} (tree order: \code{mu1 >= mu2, mu1 >= mu3 ...}). The second element must be either \code{"<"} (increasing componentwise order) or \code{">"} (decreasing componentwise order). The rest of the elements must be numbers from 1 to the number of explanatory variables, separated by commas, specifying among which variables the restrictions hold. For example, \code{"s<1,3"} will stand for \code{mu11} \code{<=} \code{mu21} \code{<=} \code{mu31} \code{<=} \dots, \code{mu13} \code{<=} \code{mu23} \code{<=} \code{mu33} \code{<=} \dots }
   \item{gamma}{ A vector of values in the unit interval that determine the classification rules with additional information (see references). }
   \item{prior}{ The prior probabilities of class membership. If unspecified, the class proportions for the training set are used. If present, the probabilities must be specified in the order of the factor levels. }
@@ -40,7 +39,6 @@ An object of class \code{'rqda'} containing the following components:
   \item{trainset}{ Matrix with the training set used (first columns) and the class for each observation (last column). }
   \item{restrictions}{ Edited character string with the linear restrictions on the mean vectors detailed. }
   \item{resmatrix}{ The matrix with the restrictions on the mean vectors used. }
-  \item{resvector}{ Constant values vector used. }
   \item{prior}{ Prior probabilities of class membership used. }
   \item{counts}{ The number of observations of the classes used. }
   \item{N}{ The total number of observations used. }
@@ -75,25 +73,29 @@ data(Vehicle2)
 levels(Vehicle2$Class)
 ## "bus" "opel" "saab" "van"
 
-data <- as.matrix(Vehicle2[, c("Pr.Axis.Ra", "logSkew.Maxis", "Holl.Ra")])
+data <- Vehicle2[, 1:4]
 grouping = Vehicle2$Class
-levels(grouping) <- c(4, 1, 2, 3)
+levels(grouping) <- c(4, 2, 1, 3)
 ## classes ordered by increasing size
 ## 
-## according to variable definitions, we could 
-## think of next restrictions on the mean vectors:
-## mu11 <= mu21 <= mu31 <= mu41
-## mu12 <= mu22 <= mu32 <= mu42
+## according to variable definitions, we can consider
+## the following restrictions on the means vectors:
+## mu11 >= mu21 >= mu31 >= mu41
+## mu12 >= mu22 >= mu32 >= mu42
 ## mu13 >= mu23 >= mu33 >= mu43
-set.seed(6550)
-values <- runif(dim(data)[1])
-trainsubset <- values < 0.25
-testsubset <- values >= 0.25
-obj <- rqda(data, grouping, subset = trainsubset, 
-            gamma = (1:5)/5, restext = "s<1,2") 
+## 
+## we can specify these restrictions by restext = "s>1,2,3"
 
-obj <- rqda(data, grouping, subset = trainsubset, 
-            restext = "s>3")
+set.seed(7964)
+values <- runif(dim(data)[1])
+trainsubset <- values < 0.2
+obj <- rqda(data, grouping, subset = trainsubset,
+            gamma = (1:5)/5, restext = "s>1,2,3")
+obj
+## we can see that the apparent error rate of the restricted
+## rules increase with gamma:
+## gamma=0.2 gamma=0.4 gamma=0.6 gamma=0.8   gamma=1
+##  30.40936  30.99415  30.99415  30.99415  31.57895
 }
 \keyword{ multivariate }
 \keyword{ classif }

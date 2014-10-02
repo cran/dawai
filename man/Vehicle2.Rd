@@ -10,11 +10,12 @@ Four "Corgie" model vehicles were used for the experiment: a double decker bus, 
 \usage{data(Vehicle2)}
 \format{
 A data frame with 846 observations on 4 variables, all numerical and one nominal defining the class of the objects.
-\tabular{rll}{
-  [,1] \tab Pr.Axis.Ra     \tab PR.AXIS ASPECT RATIO (minor axis)/(major axis)  \cr
-  [,2] \tab logSkew.Maxis  \tab log(SKEWNESS ABOUT MAJOR AXIS) \cr
-  [,3] \tab Holl.Ra        \tab HOLLOWS RATIO (area of hollows)/(area of bounding polygon) \cr
-  [,4] \tab Class          \tab Type \cr
+\tabular{rll}{ 
+  [,1] \tab Skew.maxis   \tab Skewness about minor axis \cr
+  [,2] \tab Kurt.Maxis   \tab Kurtosis about major axis \cr
+  [,3] \tab Holl.Ra      \tab Hollows ratio: (area of hollows)/(area of bounding polygon) \cr
+  [,4] \tab Sc.Var.maxis \tab Scaled variance along minor axis: (2nd order moment about minor axis)/area \cr
+  [,5] \tab Class        \tab Type \cr
 }
 }
 \source{

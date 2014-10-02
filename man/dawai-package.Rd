@@ -13,9 +13,9 @@ Package: dawai
 
 Type: Package
 
-Version: 1.0
+Version: 1.1
 
-Date: 2014-02-05
+Date: 2014-10-02
 
 License: GPL-2 | GPL-3
 
@@ -37,4 +37,3 @@ Fernandez, M. A., Rueda, C., Salvador, B. (2006). Incorporating additional infor
 \keyword{ package }
 \keyword{ multivariate }
 \keyword{ classif }
-

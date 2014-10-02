@@ -1,5 +1,5 @@
-checks <- 
-function(trainset, traingroups, subset, resmatrix, resvector, restext, gamma, prior)
+checks <-
+function(trainset, traingroups, subset, resmatrix, restext, gamma, prior)
 {
     if(!is.null(subset))
     {
@@ -12,14 +12,14 @@ function(trainset, traingroups, subset, resmatrix, resvector, restext, gamma, pr
         traingroups <- dataset[, 1]
         trainset <- dataset[, -1, drop = FALSE]
     }
-	
+
     if(class(traingroups) == "factor")
     {
         if(sum(suppressWarnings(is.na(as.numeric(levels(traingroups))))) > 0)
         {
             cat("If grouping parameter is a factor, its levels must be numbers.\n\n")
             return(NULL)
-        } 
+        }
         traingroups <- as.numeric(levels(traingroups)[traingroups])
     }
     if(sum(!sapply(as.list(trainset), typeof) %in% 
@@ -36,11 +36,11 @@ function(trainset, traingroups, subset, resmatrix, resvector, restext, gamma, pr
     }
     traingroups <- trainset[, dim(trainset)[2]]
     trainset <- trainset[, -dim(trainset)[2], drop = FALSE]
-   
+
     numgroups <- length(levels(as.factor(traingroups)))
     dimension <- dim(trainset)[2]
 
-    n <- tapply(trainset[, 1], traingroups, function(x) length(x))  
+    n <- tapply(trainset[, 1], traingroups, function(x) length(x))
     if(sum(abs(as.numeric(levels(as.factor(traingroups))) - {1:numgroups})) > 0)
     {
         cat("Classes must be identified by natural numbers varying from 1 to the number of classes.\n\n")
@@ -57,13 +57,13 @@ function(trainset, traingroups, subset, resmatrix, resvector, restext, gamma, pr
         return(NULL)
     }
     if(!is.null(prior))
-    { 
+    {
         if(length(prior) != numgroups)
         {
             cat("Wrong number of classes in a priori probabilities.\n\n")
             return(NULL)
         }
-        if(sum(prior > 1 | prior < 0) > 0 || sum(prior) != 1)
+        if(sum(prior > 1 | prior < 0) > 0 || abs(sum(prior) - 1) > 1e-12)
         {
             cat("prior values must be in the interval [0, 1] and sum 1.\n\n")
             return(NULL)
@@ -77,27 +77,20 @@ function(trainset, traingroups, subset, resmatrix, resvector, restext, gamma, pr
     if(is.null(resmatrix) && is.null(restext))
     {
         cat("Either resmatrix or restext must be specified.\n\n")
-        return(NULL)    	
+        return(NULL)
     }
     if(!is.null(resmatrix) && dim(rbind(resmatrix))[2] != dimension * numgroups)
     {
         cat("restrictions matrix has wrong number of columns.\n\n")
         return(NULL)
-    }    
+    }
     if(is.null(resmatrix) && !is.null(restext))
     {
         resmatrix <- resmatrix(restext, numgroups, dimension)
         if(is.null(resmatrix))
-    	    return(NULL)
-    }       
-    if(is.null(resvector))
-        resvector <- 0 * {1:dim(rbind(resmatrix))[1]}
-    else if(dim(cbind(resvector))[1] != dim(rbind(resmatrix))[1])
-    {
-        cat("resvector length must equal the number of rows of the restrictions matrix.\n\n")
-        return(NULL)
+            return(NULL)
     }
-    
+
     m <- length(gamma)
 
     if(is.null(prior))
@@ -111,7 +104,6 @@ function(trainset, traingroups, subset, resmatrix, resvector, restext, gamma, pr
     output$dimension <- dimension
     output$n <- n
     output$resmatrix <- resmatrix
-    output$resvector <- resvector
     output$prior <- prior
     output$m <- m
     output

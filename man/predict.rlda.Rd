@@ -4,7 +4,7 @@
 \description{Classify multivariate observations with linear classification rules built with additional information in conjunction with \code{rlda}.
 }
 \usage{
-\method{predict}{rlda}(object, newdata, prior = object$prior, 
+\method{predict}{rlda}(object, newdata, prior = object$prior,
         gamma = object$gamma, grouping = NULL, \dots)
 }
 \arguments{
@@ -46,39 +46,36 @@ levels(Vehicle2$Class)
 ## "bus" "opel" "saab" "van"
 
 data <- Vehicle2
-levels(data$Class) <- c(4, 1, 2, 3)  
+levels(data$Class) <- c(4, 2, 1, 3)  
 ## classes ordered by increasing size
 ## 
-## according to variable definitions, we can consider
-## the following restrictions on the mean vectors:
-## mu11, mu21 <= mu31 <= mu41
-## mu12, mu22 <= mu32 <= mu42
-## mu13, mu23 >= mu33 >= mu43
-A <- matrix(0, ncol = 12, nrow = 9)
-A[t(matrix(c(1,1,2,4,3,7,4,2,5,5,6,8,7,9,8,9,9,12), nrow = 2))] <- 1
-A[t(matrix(c(1,7,2,7,3,10,4,8,5,8,6,11,7,3,8,6,9,9), nrow = 2))] <- -1
-set.seed(1725)
-values <- runif(dim(data)[1])
-trainsubset <- values < 0.25
-testsubset <- values >= 0.25
-obj <- rlda(Class ~ Pr.Axis.Ra + logSkew.Maxis + Holl.Ra, data, 
-            subset = trainsubset, gamma = c(0, 0.5, 1), 
-            resmatrix = A)
-pred <- predict(obj, newdata = data[testsubset,], gamma = c(0.5, 1),
-                grouping = data[testsubset, "Class"])
+## according to variable definitions, we can 
+## consider the following restrictions on the means vectors:
+## mu11, mu21 >= mu31 >= mu41
+## mu12, mu22 >= mu32 >= mu42
+## 
+## we have 6 restrictions, 3 predictors and 4 classes, so
+## resmatrix must be a 6 x 12 matrix:
 
-data <- Vehicle2[, c("Pr.Axis.Ra", "logSkew.Maxis")]
-grouping <- Vehicle2$Class
-levels(grouping) <- c(3, 1, 1, 2)  
-## now we can consider the following restrictions:
-## mu11 <= mu21 <= mu31
-## mu12 <= mu22 <= mu32
-set.seed(1652)
+A <- matrix(0, ncol = 12, nrow = 6)
+A[t(matrix(c(1, 1, 2, 2, 3, 4, 4, 5, 5, 7, 6, 8), nrow = 2))] <- -1
+A[t(matrix(c(1, 7, 2, 8, 3, 7, 4, 8, 5, 10, 6, 11), nrow = 2))] <- 1
+
+set.seed(983)
 values <- runif(dim(data)[1])
-trainsubset <- values < 0.25
-testsubset <- values >= 0.25
-obj <- rlda(data, grouping, subset = trainsubset, restext = "s<1,2")
-pred <- predict(obj, data[testsubset,], prior = c(1/3, 1/3, 1/3))
+trainsubset <- values < 0.2
+testsubset <- values >= 0.2
+obj <- rlda(Class ~ Kurt.Maxis + Holl.Ra + Sc.Var.maxis,
+            data, subset = trainsubset, gamma = c(0, 0.5, 1),
+            resmatrix = A)
+pred <- predict(obj, newdata = data[testsubset,], 
+                grouping = data[testsubset, "Class"],
+                prior = rep(1/4, 4))
+pred$error.rate
+## we can see that the test error rate of the restricted
+## rules decrease with gamma:
+##                       gamma=0 gamma=0.5  gamma=1
+## True error rate (%): 40.86957  39.71014 39.71014
 }
 \keyword{ multivariate }
 \keyword{ classif }
