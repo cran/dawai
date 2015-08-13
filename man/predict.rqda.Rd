@@ -27,6 +27,8 @@ A list with components
 }
 \references{
 Conde, D., Fernandez, M. A., Rueda, C., and Salvador, B. (2012). Classification of samples into two or more ordered populations with application to a cancer trial. \emph{Statistics in Medicine}, \bold{31}, 3773-3786.
+
+Conde, D., Fernandez, M. A., Salvador, B., and Rueda, C. (2015). dawai: An R Package for Discriminant Analysis with Additional Information. \emph{Journal of Statistical Software}, \bold{66(10)}, 1-19. URL http://www.jstatsoft.org/v66/i10/.
 }
 \author{
 David Conde
