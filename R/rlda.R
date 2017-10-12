@@ -148,7 +148,7 @@ function(x, grouping, subset = NULL, resmatrix = NULL, restext = NULL,
    
     output$estimatedmeans <- estimatedmeans
 
-    apparent <- 100 * (colSums(trainClassification[, -1] != traingroups) / sum(sizes))
+    apparent <- 100 * (colSums(trainClassification[, -1, drop = FALSE] != traingroups) / sum(sizes))
     names(apparent) <- paste("gamma=", gamma, sep = "")
 
     output$apparent <- apparent
