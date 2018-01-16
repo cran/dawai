@@ -1,5 +1,5 @@
 checks <-
-function(trainset, traingroups, subset, resmatrix, restext, gamma, prior)
+function(trainset, traingroups, subset, resmatrix, restext, gamma, prior, type)
 {
     if(!is.null(subset))
     {
@@ -51,11 +51,16 @@ function(trainset, traingroups, subset, resmatrix, restext, gamma, prior)
         cat("Training set has only one class.\n\n")
         return(NULL)
     }
-    if(sum(n < dimension) > 0)
+    if(type == 'q' & sum(n < dimension) > 0)
     {
         cat("Not enough training sample size for at least one class.\n\n")
         return(NULL)
     }
+    if(type == 'l' & sum(n) < dimension)
+    {
+        cat("Not enough training sample size.\n\n")
+        return(NULL)
+    }        
     if(!is.null(prior))
     {
         if(length(prior) != numgroups)

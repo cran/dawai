@@ -13,9 +13,9 @@ Package: dawai
 
 Type: Package
 
-Version: 1.2.2
+Version: 1.2.3
 
-Date: 2017-10-12
+Date: 2018-01-16
 
 License: GPL-2 | GPL-3
 

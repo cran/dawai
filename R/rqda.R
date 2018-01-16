@@ -84,7 +84,7 @@ function(x, grouping, subset = NULL, resmatrix = NULL, restext = NULL,
         return(output)
     }
 
-    check <- checks(x, grouping, subset, resmatrix, restext, gamma, prior)
+    check <- checks(x, grouping, subset, resmatrix, restext, gamma, prior, "q")
     if(is.null(check))
         return(output)
     trainset <- check$trainset
