@@ -217,7 +217,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
             grouping <- levels(grouping)[grouping]
         }
         grouping <- c(as.matrix(as.numeric(grouping)))
-        if(dim(cbind(array(as.matrix(grouping)))) != c(dim(newdata)[1], 1) ||
+        if(dim(cbind(array(as.matrix(grouping))))[1] != dim(newdata)[1] ||
             sum(grouping > floor(grouping)) > 0)
         {
             cat("Invalid grouping vector.\n\n")

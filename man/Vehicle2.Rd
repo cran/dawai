@@ -24,8 +24,7 @@ A data frame with 846 observations on 4 variables, all numerical and one nominal
 }
 These data have been taken from the UCI Repository Of Machine Learning Databases at
 \itemize{
-  \item \url{ftp://ftp.ics.uci.edu/pub/machine-learning-databases}
-  \item \url{http://www.ics.uci.edu/~mlearn/MLRepository.html}
+  \item \url{http://archive.ics.uci.edu/ml/index.php}
 }
 and were converted to R format by Evgenia Dimitriadou.
 }

@@ -61,7 +61,7 @@ obj <- rlda(data, grouping, subset = trainsubset, restext = "s>1")
 pred <- predict(obj, data[testsubset,], grouping = grouping[testsubset],
                 prior = c(1/3, 1/3,1/3))
 pred$error.rate
-err.est(obj, 30, prior = c(1/3, 1/3, 1/3))
+err.est(obj, 25, prior = c(1/3, 1/3, 1/3))
 }
 \keyword{ multivariate }
 \keyword{ classif }
