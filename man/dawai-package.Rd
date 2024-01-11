@@ -13,9 +13,9 @@ Package: dawai
 
 Type: Package
 
-Version: 1.2.5
+Version: 1.2.6
 
-Date: 2021-05-03
+Date: 2024-01-11
 
 License: GPL-2 | GPL-3
 
@@ -25,7 +25,7 @@ For a complete list of functions with individual help pages, use \code{library(h
 \author{
 David Conde, Miguel A. Fernandez, Bonifacio Salvador
 
-Maintainer: David Conde <dconde@eio.uva.es>
+Maintainer: David Conde <daconrio@gmail.com>
 }
 \references{
 Conde, D., Fernandez, M. A., Rueda, C., and Salvador, B. (2012). Classification of samples into two or more ordered populations with application to a cancer trial. \emph{Statistics in Medicine}, \bold{31}, 3773-3786.

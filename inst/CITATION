@@ -1,21 +1,21 @@
-citHeader("To cite dawai in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
+  header       = "To cite dawai in publications use:",
   title        = "{dawai}: An {R} Package for Discriminant Analysis with Additional Information",
-  author       = personList(as.person("David Conde"),
-                   as.person("Miguel A. Fern\\'{a}ndez"),
-                   as.person("Bonifacio Salvador"),
-                   as.person("Cristina Rueda")),
+  author       = c(person("David Conde"),
+                   person("Miguel A. Fern\\'{a}ndez"),
+                   person("Bonifacio Salvador"),
+                   person("Cristina Rueda")),
   journal      = "Journal of Statistical Software",
   year         = "2015",
   volume       = "66",
   number       = "10",
   pages        = "1--19",
-  url          = "https://www.jstatsoft.org/article/view/v066i10",
+  doi          = "10.18637/jss.v066.i10",
 
   textVersion  =
   paste("David Conde, Miguel A. Fernandez, Bonifacio Salvador, Cristina Rueda (2015).",
         "dawai: An R Package for Discriminant Analysis with Additional Information.",
         "Journal of Statistical Software, 66(10), 1-19.",
-        "URL https://www.jstatsoft.org/article/view/v066i10")
+        "URL https://doi.org/10.18637/jss.v066.i10")
 )

@@ -13,7 +13,7 @@ function(trainset, traingroups, subset, resmatrix, restext, gamma, prior, type)
         trainset <- dataset[, -1, drop = FALSE]
     }
 
-    if(class(traingroups) == "factor")
+    if(inherits(traingroups, "factor"))
     {
         if(sum(suppressWarnings(is.na(as.numeric(levels(traingroups))))) > 0)
         {

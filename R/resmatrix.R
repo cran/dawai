@@ -1,7 +1,7 @@
 resmatrix <-
 function(text, numgroups, dimension)
 {
-    if(class(text) != "character" || nchar(text) <= 2 || !(tolower(substr(text, 1, 1))
+    if(!inherits(text, "character") || nchar(text) <= 2 || !(tolower(substr(text, 1, 1))
        %in% c("s", "t")) || !(substr(text, 2, 2) %in% c(">", "<")))
     {
         cat("Invalid constraints text.\n\n")

@@ -1,5 +1,7 @@
-# functions
-export(err.est, rest.est, rlda, rqda)
+import(mvtnorm, boot)
+importFrom(stats, complete.cases, dnorm, model.frame, var)
+useDynLib(dawai, .registration=TRUE)
+export(err.est, rest.est, rlda, rqda, lsConstrain.fit)
 
 S3method(err.est, rlda)
 S3method(err.est, rqda)
@@ -15,6 +17,3 @@ S3method(rqda, data.frame)
 S3method(rqda, default)
 S3method(rqda, formula)
 S3method(rqda, matrix)
-
-import(mvtnorm, ibdreg, boot)
-importFrom(stats, complete.cases, dnorm, model.frame, var)

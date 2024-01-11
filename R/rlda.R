@@ -19,7 +19,7 @@ function(formula, data, ...)
         cat("There is no data set.\n\n")
         return(output)
     }
-    if(class(data) != "data.frame")
+    if(!inherits(data, "data.frame"))
     {
        cat("data parameter is not a data.frame.\n\n")
        return(output)
@@ -77,7 +77,7 @@ function(x, grouping, subset = NULL, resmatrix = NULL, restext = NULL,
         cat("grouping vector is missing.\n\n")
         return(output)
     }
-    if(class(x) != "data.frame")
+    if(!inherits(x, "data.frame"))
     {
         cat("data set parameter is not a data.frame.\n\n")
         return(output)
@@ -195,7 +195,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
         cat("newdata is missing.\n\n")
         return(output)
     }
-    if(class(newdata) != "data.frame")
+    if(!inherits(newdata, "data.frame"))
     {
         cat("newdata parameter is not a data.frame.\n\n")
         return(output)
@@ -207,7 +207,7 @@ function(object, newdata, prior = object$prior, gamma = object$gamma, grouping =
     }
     if(!is.null(grouping))
     {
-        if(class(grouping) == "factor")
+        if(inherits(grouping, "factor"))
         {
             if(sum(suppressWarnings(is.na(as.numeric(levels(grouping))))) > 0)
             {
