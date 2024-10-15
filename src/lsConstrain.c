@@ -114,15 +114,15 @@ void lsConstrain(
        /* free memory  */
 
        for(i=0; i< n; i++){
-         Free(s[i]);
+         R_Free(s[i]);
        }
-       Free(s);
+       R_Free(s);
        s = NULL;
 
        for(i=0; i< k; i++){
-         Free(a[i]);
+         R_Free(a[i]);
        }
-       Free(a);
+       R_Free(a);
        a = NULL;
        return;
 
@@ -210,15 +210,15 @@ void lsConstrain(
      /* free memory  */
 
      for(i=0; i< n; i++){
-        Free(s[i]);
+        R_Free(s[i]);
      }
-     Free(s);
+     R_Free(s);
      s = NULL;
 
      for(i=0; i< k; i++){
-       Free(a[i]);
+       R_Free(a[i]);
      }
-     Free(a);
+     R_Free(a);
      a = NULL;
  
      return;
@@ -237,15 +237,15 @@ void lsConstrain(
   /* free memory  */
 
   for(i=0; i< n; i++){
-    Free(s[i]);
+    R_Free(s[i]);
   }
-  Free(s);
+  R_Free(s);
   s = NULL;
 
   for(i=0; i< k; i++){
-    Free(a[i]);
+    R_Free(a[i]);
   }
-  Free(a);
+  R_Free(a);
   a = NULL;
 
   return;
@@ -277,12 +277,12 @@ static double **double_matrix(ulong nrow, ulong ncol){
         double **m;
 
         /* allocate pointers to rows */
-        m=(double **) Calloc(nrow, double *);
+        m=(double **) R_Calloc(nrow, double *);
         if (!m) errmsg("mem alloc failure 1 in double_matrix");
   
 	/* allocate vec of memory for each row */
         for(i=0;i<nrow;i++) {
-          m[i]=(double *) Calloc(ncol, double);
+          m[i]=(double *) R_Calloc(ncol, double);
           if(!m[i]) errmsg("mem alloc failure 2 in double_matrix");
 	}
 
